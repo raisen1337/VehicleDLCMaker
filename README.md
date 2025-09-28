@@ -40,6 +40,7 @@ The script performs a multi-pass process for each unique vehicle identified:
 ## 📂 Required Directory Structure
 
 Before running the script, your project folder must be organized as follows:
+```
 /your-project-folder/
 ├── input/
 │   ├── some_car_folder/
@@ -58,6 +59,7 @@ Before running the script, your project folder must be organized as follows:
 │   └── gtautil.exe  <-- (Included in this repository)
 │
 └── index.js  <-- (The script file)
+```
 
 **Note:** The `input` folder can contain any number of sub-folders. The script will scan through all of them to find the files it needs.
 
