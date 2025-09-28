@@ -1,78 +1,104 @@
-# GTA V Automatic DLC Packager
 
-This Node.js script automates the process of creating separate, properly structured vehicle and audio DLC packs for Grand Theft Auto V from a disorganized collection of mod files. It scans an input directory, identifies vehicle models and their associated files, automatically fixes common meta file issues, and generates clean, game-ready DLC archives (`dlc.rpf`).
+# GTA V Vehicle & Audio DLC Packager
 
-## Key Features
+A powerful Node.js script that automates the creation of Grand Theft Auto V add-on vehicle DLC packs. This tool intelligently scans a folder of unorganized vehicle mod files, correctly separates vehicle and audio components, automatically fixes common metadata issues, and packages them into two distinct, game-ready `.rpf` archives.
 
--   **Automatic DLC Creation**: Scans a folder and creates a separate vehicle and audio DLC for each unique car model found.
--   **Intelligent File Sorting**: Correctly identifies and places model files (`.yft`, `.ytd`), meta files, audio files (`.awc`, `.rel`), and modkit parts into the correct DLC structure.
--   **Meta File Validation & Repair**: Automatically fixes common, game-breaking issues in meta files to ensure stability and proper functionality in-game.
--   **Dynamic XML Generation**: Creates the necessary `content.xml` and `setup2.xml` files for each DLC, ensuring the game recognizes and loads the content.
--   **Audio Handling**: Detects if a vehicle is missing its `audioNameHash` and, if audio files are present, automatically links them in the `vehicles.meta`. It then packages all audio-related files into a separate, dependent audio DLC.
--   **Modkit & Lights Synchronization**: Ensures that `carvariations.meta` correctly links to `carcols.meta` (or `dlctext.meta`). It will generate new, unique IDs for modkits and light settings if they don't exist, preventing conflicts.
--   **Clean Output**: Organizes the final `dlc.rpf` files into a clean `output` directory, ready to be added to your game's `dlcpacks` folder.
+This script streamlines the development and packaging process, eliminating the tedious manual work of structuring folders, writing meta files, and creating archives, ensuring a clean and correct installation for any add-on vehicle.
 
-## Requirements
+## ✨ Key Features
 
-1.  **[Node.js](https://nodejs.org/)**: The script is written in JavaScript and requires the Node.js runtime.
-2.  **`gtautil`**: This script relies on an external tool, `gtautil`, to build the final RPF archives. You must place the `gtautil` executable inside a `utils` folder.
+-   **Automatic DLC Structuring**: Creates the entire folder and sub-folder structure required for both vehicle and audio DLCs from scratch.
+-   **Intelligent File Sorting**: Scans your input directory and automatically identifies and sorts models (`.yft`, `.ytd`), metadata (`.meta`), audio files (`.awc`, `.dat`, `.rel`), and mod parts for each vehicle.
+-   **Dynamic XML Generation**: Generates valid `content.xml` and `setup2.xml` for both the vehicle and audio packages, tailored specifically to each vehicle's file names and hashes.
+-   **Automatic `audioNameHash` Correction**: Intelligently detects if a `vehicles.meta` file has an empty `<audioNameHash />` tag. If corresponding audio files are found for that vehicle, it automatically populates the tag (e.g., `<audioNameHash>carname</audioNameHash>`), fixing a common issue that causes add-on vehicles to have no sound.
+-   **Batch Processing**: Processes every unique vehicle found in the input folder, creating separate, organized DLC packages for each one.
+-   **Nested RPF Creation**: Uses the included `gtautil.exe` to correctly build nested `.rpf` archives (e.g., `vehicles.rpf`, `carname_mods.rpf`) inside the main `dlc.rpf`.
+-   **Clean & Tidy**: Automatically creates and deletes temporary working directories, keeping your project folder clean.
 
-## How to Use
+## ⚙️ How It Works
 
-1.  **Set Up Your Folders**:
-    -   Create a main project folder.
-    -   Inside, create an `input` folder. Place all your vehicle mod files here (e.g., `.yft`, `.ytd`, `.meta`, `.awc`). You can keep them in their original subfolders; the script will find them recursively.
-    -   Create a `utils` folder and place the `gtautil` executable inside it.
+The script performs a multi-pass process for each unique vehicle identified:
 
-    Your directory structure should look like this:
+1.  **Initial Scan**: It first recursively scans the entire `input` directory to locate all `vehicles.meta` files. It parses these files to build a master list of all unique vehicle model names (e.g., "sentinel", "turismo").
+2.  **Vehicle Package Creation**:
+    *   For each vehicle, it creates a temporary folder structure for a vehicle DLC (e.g., `output/sentinel/sentinel_vehicle_dlc_temp`).
+    *   It generates the necessary `content.xml` and `setup2.xml`.
+    *   It finds all relevant files for that vehicle (models, textures, `handling.meta`, `carcols.meta`, etc.) based on file naming conventions and copies them into the correct temporary sub-folders (`/data`, `/x64/vehicles.rpf/`, `/x64/vehiclemods/sentinel_mods.rpf/`).
+    *   It performs the `audioNameHash` check and modification during this step.
+3.  **Audio Package Creation**:
+    *   It then creates a separate temporary folder structure for an audio DLC (e.g., `output/sentinel_audio/sentinel_audio_dlc_temp`).
+    *   It generates a unique `content.xml` and `setup2.xml` for the audio components.
+    *   It locates all associated audio files (`.awc` archives, `_game.dat`, `_sounds.dat`, `.rel` config files) based on the vehicle name and its `audioNameHash`. These are copied into the correct temporary sub-folders (`/x64/audio/`, `/x64/audio/sfx/dlc_sentinel/`).
+4.  **Archive Creation**: The script calls `gtautil.exe` to compile the contents of each temporary folder into a final, properly structured `dlc.rpf` file.
+5.  **Cleanup**: The temporary folders are deleted, leaving only the final `.rpf` archives in the `output` directory.
 
+## 📦 Prerequisites
+
+-   [Node.js](https://nodejs.org/) (v14 or higher recommended)
+-   Windows operating system (as the script relies on `gtautil.exe`)
+
+## 📂 Required Directory Structure
+
+Before running the script, your project folder must be organized as follows:
+/your-project-folder/
+├── input/
+│ ├── some_car_folder/
+│ │ ├── vehicles.meta
+│ │ ├── handling.meta
+│ │ ├── carcols.meta
+│ │ ├── carvariations.meta
+│ │ ├── mycar.yft
+│ │ ├── mycar.ytd
+│ │ └── mycar_hi.yft
+│ ├── some_other_car/
+│ │ └── ... (more car files)
+│ └── ... (place all your unsorted mod files and folders here)
+│
+├── utils/
+│ └── gtautil.exe <-- (Included in this repository)
+│
+└── create_gta_dlc_rpfs.js <-- (The script file)
+
+**Note:** The `input` folder can contain any number of sub-folders. The script will scan through all of them to find the files it needs.
+
+## 🚀 Installation & Usage
+
+1.  **Clone the Repository**:
+    ```sh
+    git clone https://github.com/your-username/your-repo-name.git
+    cd your-repo-name
     ```
-    /your-project-folder
-    |-- create_dlc.js         (this script)
-    |-- /input
-    |   |-- /some-car-folder
-    |       |-- carmodel.yft
-    |       |-- carmodel.ytd
-    |       |-- vehicles.meta
-    |       |-- carmodel_audio.awc
-    |       |-- ... (and other files)
-    |-- /utils
-    |   |-- gtautil             (or gtautil.exe on Windows)
+
+2.  **Install Dependencies**: This script uses only built-in Node.js modules, so no `npm install` is required.
+
+3.  **Populate the `input` Folder**: Place all your vehicle mod files and folders into the `input` directory.
+
+4.  **Run the Script**: Open a terminal or command prompt in the project's root directory and execute the script:
+    ```sh
+    node create_gta_dlc_rpfs.js
     ```
 
-2.  **Run the Script**:
-    -   Open a terminal or command prompt in your main project folder.
-    -   Execute the script by running the command:
-        ```bash
-        node create_dlc.js
-        ```
+5.  **Check the Output**: The script will log its progress in the console. Once finished, you will find your generated DLC packs in the `output` folder.
 
-3.  **Check the Output**:
-    -   The script will create an `output` folder. Inside, you will find a separate folder for each vehicle and its corresponding audio pack, each containing a `dlc.rpf` file.
-    -   For a car named `carmodel`, you will get:
-        -   `output/carmodel/dlc.rpf` (Vehicle DLC)
-        -   `output/carmodel_audio/dlc.rpf` (Audio DLC)
+## ✅ Expected Output
 
-## Automatic Meta File Fixes
+After the script successfully completes, your `output` folder will be structured like this:
+/your-project-folder/
+├── output/
+│ ├── mycar/
+│ │ └── dlc.rpf <-- Vehicle DLC Pack
+│ ├── mycar_audio/
+│ │ └── dlc.rpf <-- Audio DLC Pack
+│ │
+│ ├── anothercar/
+│ │ └── dlc.rpf
+│ └── anothercar_audio/
+│ └── dlc.rpf
+│
+└── ... (other files)
 
-This script performs several automated corrections to prevent common crashes and bugs:
+Each pair of `dlc.rpf` files is ready to be added to your `dlcpacks` folder in Grand Theft Auto V.
 
--   **`vehicles.meta`**:
-    -   Checks for and adds missing `FirstPersonDriveBy...IKOffset` tags, which are a frequent cause of first-person camera crashes.
-    -   If `audioNameHash` is empty but audio files for the model exist, it automatically fills in the hash to enable custom sounds.
+## 🛠️ Included Utility: gtautil
 
--   **`handling.meta`**:
-    -   Adds a default `<fDownforceModifier>` tag if it's missing.
-    -   Standardizes the `<SubHandlingData>` section to prevent conflicts with other mods.
-
--   **`carvariations.meta`**:
-    -   Standardizes `<liveries />` tags to a clean, self-closing format.
-    -   Synchronizes `kitName` with the global `carcols.meta`, creating a new modkit entry if needed.
-    -   Synchronizes `lightSettings` with the global `carcols.meta`, generating a new light profile based on a stable template if one doesn't exist.
-
--   **`carcols.meta` / `dlctext.meta`**:
-    -   Acts as the central file for vehicle tuning info. The script reads the first one it finds and uses it to reconstruct a master list of all modkits and light settings, ensuring there are no ID conflicts.
-
-## Disclaimer
-
-This tool is designed for personal use in managing GTA V vehicle mods. It relies on the third-party `gtautil` executable, which is not included. Please ensure you have the correct and a functional version of `gtautil` for your operating system.
+This project includes `gtautil.exe` in the `/utils` directory. This is a command-line tool developed as part of the OpenIV toolset, essential for creating and manipulating Rockstar's `.rpf` archive format. The script calls this executable to perform the final packaging step. Ensure it remains in the `utils` folder for the script to function correctly.
