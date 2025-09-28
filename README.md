@@ -85,6 +85,7 @@ Before running the script, your project folder must be organized as follows:
 ## ✅ Expected Output
 
 After the script successfully completes, your `output` folder will be structured like this:
+```
 /your-project-folder/
 ├── output/
 │ ├── mycar/
@@ -98,7 +99,7 @@ After the script successfully completes, your `output` folder will be structured
 │ └── dlc.rpf
 │
 └── ... (other files)
-
+```
 Each pair of `dlc.rpf` files is ready to be added to your `dlcpacks` folder in Grand Theft Auto V.
 
 ## 🛠️ Included Utility: gtautil
