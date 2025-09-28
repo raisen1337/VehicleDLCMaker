@@ -42,22 +42,22 @@ The script performs a multi-pass process for each unique vehicle identified:
 Before running the script, your project folder must be organized as follows:
 /your-project-folder/
 ├── input/
-│ ├── some_car_folder/
-│ │ ├── vehicles.meta
-│ │ ├── handling.meta
-│ │ ├── carcols.meta
-│ │ ├── carvariations.meta
-│ │ ├── mycar.yft
-│ │ ├── mycar.ytd
-│ │ └── mycar_hi.yft
-│ ├── some_other_car/
-│ │ └── ... (more car files)
-│ └── ... (place all your unsorted mod files and folders here)
+│   ├── some_car_folder/
+│   │   ├── vehicles.meta
+│   │   ├── handling.meta
+│   │   ├── carcols.meta
+│   │   ├── carvariations.meta
+│   │   ├── mycar.yft
+│   │   ├── mycar.ytd
+│   │   └── mycar_hi.yft
+│   ├── some_other_car/
+│   │   └── ... (more car files)
+│   └── ... (place all your unsorted mod files and folders here)
 │
 ├── utils/
-│ └── gtautil.exe <-- (Included in this repository)
+│   └── gtautil.exe  <-- (Included in this repository)
 │
-└── create_gta_dlc_rpfs.js <-- (The script file)
+└── index.js  <-- (The script file)
 
 **Note:** The `input` folder can contain any number of sub-folders. The script will scan through all of them to find the files it needs.
 
