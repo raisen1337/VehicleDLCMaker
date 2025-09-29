@@ -1,6 +1,9 @@
 
 # GTA V Vehicle & Audio DLC Packager
 
+## Disclaimer
+**Use of unlicensed(eg. leaked), real brands and any types of assets of which are mentioned in RageMP TOS is prohibited. Do at your own risk.
+
 A powerful Node.js script that automates the creation of Grand Theft Auto V add-on vehicle DLC packs. This tool intelligently scans a folder of unorganized vehicle mod files, correctly separates vehicle and audio components, automatically fixes common metadata issues, and packages them into two distinct, game-ready `.rpf` archives.
 
 This script streamlines the development and packaging process, eliminating the tedious manual work of structuring folders, writing meta files, and creating archives, ensuring a clean and correct installation for any add-on vehicle.
